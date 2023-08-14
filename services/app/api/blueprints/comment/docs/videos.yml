@@ -1,0 +1,20 @@
+description: Get all the video comments
+tags:
+  - Comments
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - in: query
+    description: The query should contain the video id.
+    required: true
+    name: 'video_id'
+    type: 'string'
+
+responses:
+  200:
+    description: When all admins are successfully obtained.
+
+  400:
+    description: Fails to list all admins due to bad request data

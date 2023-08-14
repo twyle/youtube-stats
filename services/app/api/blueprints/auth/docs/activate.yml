@@ -1,0 +1,23 @@
+description: Activate a created account.
+tags:
+  - Authentication
+produces:
+  - "application/json"
+parameters:
+  - in: query
+    description: The query should contain the user id.
+    required: false
+    name: 'user_id'
+    type: 'string'
+  - in: query
+    description: The query should contain the account activation token.
+    required: true
+    name: 'activation_token'
+    type: 'string'
+
+responses:
+  200:
+    description: When account is successfully activated.
+
+  400:
+    description: Fails to activate account due to bad request data.

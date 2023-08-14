@@ -1,0 +1,43 @@
+description: Add a Video.
+tags:
+  - Videos
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - name: body
+    description: The body should contain the video id, title, channel, description, thumbnail url, durationand the count of views, comments and likes.
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "videos"
+      properties:
+        videos:
+          type: "array"
+          items:
+            type: object
+          example: [
+            {
+              'video_id': 'HU6LfXNeQM4',
+              'video_title': 'Video title',
+              'channel_title': 'Channel Title',
+              'video_description': 'Video Description.',
+              'video_thumbnail': 'http://heath-barton.com/',
+              'video_duration': '8T',
+              'views_count': 123465,
+              'likes_count': 234,
+              'comments_count': 543,
+              'date_published': '2023-05-21'
+            }
+          ]
+responses:
+  201:
+    description: WHen the video  is successfully added.
+
+  409:
+    description: Fails to add video since a similar one exists.

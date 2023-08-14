@@ -1,0 +1,32 @@
+description: Log in to a registered account.
+tags:
+  - Admin
+produces:
+  - "application/json"
+parameters:
+  - name: body
+    description: The body should contain the email address and the password.
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "email_address"
+        - "password"
+      properties:
+        email_address:
+          type: "email"
+          example: "admin@gmail.com"
+        password:
+          type: "string"
+          example: "password"
+
+responses:
+  201:
+    description: When you succesfully register.
+
+  400:
+    description: When your registration fails due to providing bad data.
+
+  409:
+    description: Fails to register when you give the email address of an existing user.

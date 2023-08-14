@@ -1,0 +1,19 @@
+description: Get all the channel comments
+tags:
+  - Comments
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - in: query
+    description: The query should contain the channel id.
+    required: true
+    name: 'channel_id'
+    type: 'string'
+responses:
+  200:
+    description: When all admins are successfully obtained.
+
+  400:
+    description: Fails to list all admins due to bad request data

@@ -1,0 +1,43 @@
+description: User Update
+tags:
+  - Admin
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - in: query
+    description: The query should contain the user id.
+    required: true
+    name: 'user_id'
+    type: 'string'
+  - name: body
+    description: The body should contain the user id.
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "first_name"
+        - "last_name"
+        - "email_address"
+      properties:
+        first_name:
+          type: "string"
+          example: "Lyle"
+        last_name:
+          type: "string"
+          example: "Okoth"
+        email_address:
+          type: "email"
+          example: "lyle@gmail.com"
+
+responses:
+  201:
+    description: When you succesfully register.
+
+  400:
+    description: When your registration fails due to providing bad data.
+
+  409:
+    description: Fails to register when you give the email address of an existing user.

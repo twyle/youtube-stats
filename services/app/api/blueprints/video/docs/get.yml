@@ -1,0 +1,25 @@
+description: Get a video with the given id or title.
+tags:
+  - Videos
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - in: query
+    description: The query should contain the video id.
+    required: false
+    name: 'video_id'
+    type: 'string'
+  - in: query
+    description: The query should contain the video title.
+    required: false
+    name: 'video_title'
+    type: 'string'
+
+responses:
+  200:
+    description: When a Video is successfully retrieved.
+
+  400:
+    description: Fails to get a video due to bad request data, such as invalid title name or non-existant video id.

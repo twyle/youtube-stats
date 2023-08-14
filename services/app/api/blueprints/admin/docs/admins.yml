@@ -1,0 +1,16 @@
+description: List All the Admins.
+
+tags:
+  - Admin
+produces:
+  - "application/json"
+
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+
+responses:
+  200:
+    description: When all the users are successfully listed..
+
+  400:
+    description: Fails to list all users due to bad request data.

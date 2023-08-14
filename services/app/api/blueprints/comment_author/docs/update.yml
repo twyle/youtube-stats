@@ -1,0 +1,47 @@
+description: Update a comment author.
+tags:
+  - Comment Authors
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - in: query
+    description: The query should contain the comment author id.
+    required: true
+    name: 'author_id'
+    type: 'string'
+  - name: body
+    description: The body should contain the author details.
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "author_display_name"
+        - "author_profile_image_url"
+        - "author_channel_url"
+        - "author_channel_id"
+      properties:
+        author_display_name:
+          type: "string"
+          example: "Linda Atieno"
+        author_profile_image_url:
+          type: "string"
+          example: "https://yt3.ggpht.com/ytc/AGIKgqNWPFc4OKdhlFKB0Reeeazlo8QfpJKptKOrWQ=s48-c-k-c0x00ffffff-no-rj"
+        author_channel_url:
+          type: "string"
+          example: "http://www.youtube.com/channel/UCC7S6K7oE7ELiahI5qz8UCg"
+        author_channel_id:
+          type: "string"
+          example: "UCC7S6K7oE7ELiahI5qz8UCg"
+
+responses:
+  201:
+    description: When you succesfully register.
+
+  400:
+    description: When your registration fails due to providing bad data.
+
+  409:
+    description: Fails to register when you give the email address of an existing user.

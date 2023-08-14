@@ -1,0 +1,44 @@
+description: Admin Registration
+tags:
+  - Admin
+produces:
+  - "application/json"
+parameters:
+  - name: body
+    description: The body should contain the admin details.
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "first_name"
+        - "last_name"
+        - "email_address"
+        - "password"
+        - "confirm_password"
+      properties:
+        first_name:
+          type: "string"
+          example: "Lyle"
+        last_name:
+          type: "string"
+          example: "Okoth"
+        email_address:
+          type: "email"
+          example: "admin@gmail.com"
+        password:
+          type: "string"
+          example: "password"
+        confirm_password:
+          type: "string"
+          example: "password"
+
+responses:
+  201:
+    description: When you succesfully register as an admin.
+
+  400:
+    description: When your registration fails due to providing bad data.
+
+  409:
+    description: Fails to register when you give the email address of an existing admin.

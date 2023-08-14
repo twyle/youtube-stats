@@ -1,0 +1,47 @@
+description: List All the Videos.
+tags:
+  - Videos
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - in: query
+    description: The query should contain the channel title.
+    required: false
+    name: 'channel_title'
+    type: 'string'
+  - in: query
+    description: The query should contain the field to use when sorting.
+    required: false
+    name: 'sort_field'
+    type: 'string'
+    enum: ['video_title', 'channel_title', 'date_published', 'video_duration', 'views_count', 'likes_count', 'comments_count', 'id']
+  - in: query
+    description: The query should contain the sorting order.
+    required: false
+    name: 'sort_order'
+    type: 'string'
+    enum: [ "ASC", "DESC"]
+  - in: query
+    description: The query should contain the number of videos to return.
+    required: false
+    name: 'limit'
+    type: 'int'
+    enum: [1,2,3,4,5,6,7,8,9,10]
+  - in: query
+    description: The query should contain the number of videos to skip.
+    required: false
+    name: 'offset'
+    type: 'int'
+  - in: query
+    description: The query should contain the number of videos to skip.
+    required: false
+    name: 'date_published'
+    type: 'string'
+responses:
+  200:
+    description: When all the videos are successfully listed..
+
+  400:
+    description: Fails to list all videos due to bad request data.

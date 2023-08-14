@@ -1,0 +1,56 @@
+description: Add a Playlist Item.
+tags:
+  - Playlist Items
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - name: body
+    description: The body should contain the playlist item details.
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "playlist_item_id"
+        - "channel_adder_id"
+        - "video_owner_channel_id"
+        - "playlist_id"
+        - "privacy_status"
+        - "date_added"
+        - "position"
+        - "video_id"
+      properties:
+        playlist_item_id:
+          type: "string"
+          example: "UExzeWVvYnpXeGw3cG9MOUpUVnluZEtlNjJpZW9OLU1aMy45RTgxNDRBMzUwRjQ0MDhC"
+        channel_adder_id:
+          type: "string"
+          example: "UC59K-uG2A5ogwIrHw4bmlEg"
+        video_owner_channel_id:
+          type: "string"
+          example: "UC59K-uG2A5ogwIrHw4bmlEg"
+        playlist_id:
+          type: "string"
+          example: "PLsyeobzWxl7poL9JTVyndKe62ieoN-MZ3"
+        privacy_status:
+          type: "string"
+          example: "public"
+        date_added:
+          type: "string"
+          example: "2018-07-12T13:33:15Z"
+        position:
+          type: "int"
+          example: 24
+        video_id:
+          type: "string"
+          example: "0ZvaDa8eT5s"
+responses:
+  200:
+    description: When the confirmation email is successffuly sent
+
+  400:
+    description: Fails to update user due to bad request data

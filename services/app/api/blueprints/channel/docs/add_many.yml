@@ -1,0 +1,42 @@
+description: Add many Channels.
+tags:
+  - Channels
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - name: body
+    description: The body should contain a list of channel details.
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "channels"
+      properties:
+        channels:
+          type: "array"
+          items:
+            type: object
+          example: [
+            {
+              'channel_id': 'HU6LfXNeQM4',
+              'channel_title': 'Channel Title',
+              'channel_description': 'Channel Description.',
+              'channel_thumbnail': 'http://heath-barton.com/',
+              'custom_url': '8T',
+              'views_count': 123465,
+              'videos_count': 234,
+              'subscribers_count': 543,
+              'published_at': '2023-05-21'
+            }
+          ]
+responses:
+  201:
+    description: WHen the chanels is successfully added.
+
+  409:
+    description: Fails to add chanels since a similar one exists.

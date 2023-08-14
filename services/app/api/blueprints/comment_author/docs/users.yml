@@ -1,0 +1,38 @@
+description: List All the Comment authors.
+tags:
+  - Comment Authors
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - in: query
+    description: The query should contain the field to use when sorting.
+    required: false
+    name: 'sort_field'
+    type: 'string'
+    enum: ['author_display_name', 'athor_id']
+  - in: query
+    description: The query should contain the sorting order.
+    required: false
+    name: 'sort_order'
+    type: 'string'
+    enum: [ "ASC", "DESC"]
+  - in: query
+    description: The query should contain the number of authors to return.
+    required: false
+    name: 'limit'
+    type: 'int'
+    enum: [1,2,3,4,5,6,7,8,9,10]
+  - in: query
+    description: The query should contain the number of authors to skip.
+    required: false
+    name: 'offset'
+    type: 'int'
+
+responses:
+  200:
+    description: When all the users are successfully listed..
+
+  400:
+    description: Fails to list all users due to bad request data.

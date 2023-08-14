@@ -1,0 +1,41 @@
+description: Add many Playlist Items.
+tags:
+  - Playlist Items
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - name: body
+    description: The body should contain a list of playlist item details.
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "playlist_items"
+      properties:
+        playlist_items:
+          type: "array"
+          items:
+            type: object
+          example: [ 
+            {
+              "playlist_item_id": "UExzeWVvYnpXeGw3cG9MOUpUVnluZEtlNjJpZW9OLU1aMy45RTgxNDRBMzUwRjQ0MDhC",
+              "channel_adder_id": "UC59K-uG2A5ogwIrHw4bmlEg",
+              "video_owner_channel_id": "UC59K-uG2A5ogwIrHw4bmlEg",
+              "playlist_id": "PLsyeobzWxl7poL9JTVyndKe62ieoN-MZ3",
+              "privacy_status": "public",
+              "date_added": "2018-07-12T13:33:15Z",
+              "position": 24,
+              "video_id": "0ZvaDa8eT5s"
+            }
+          ]
+responses:
+  201:
+    description: WHen the chanels is successfully added.
+
+  409:
+    description: Fails to add chanels since a similar one exists.

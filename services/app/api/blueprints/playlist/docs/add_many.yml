@@ -1,0 +1,41 @@
+description: Add many Playlists.
+tags:
+  - Playlists
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - name: body
+    description: The body should contain a list of playlist details.
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "playlists"
+      properties:
+        playlists:
+          type: "array"
+          items:
+            type: object
+          example: [
+            {
+              "channel_id": "TTT",
+              "playlist_description": "Playlist Description.",
+              "videos_count": 200000,
+              "playlist_id": "HU6LfXNeQM4",
+              "privacy_status": "public",
+              "published_at": "TTT",
+              "playlist_thumbnail": "HU6LfXNeQM4",
+              "playlist_title": "Your Brain: Perception Deception | Full Documentary | NOVA | PBS"
+            }
+          ]
+responses:
+  201:
+    description: WHen the chanels is successfully added.
+
+  409:
+    description: Fails to add chanels since a similar one exists.

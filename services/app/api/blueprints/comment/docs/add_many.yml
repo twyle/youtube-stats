@@ -1,0 +1,41 @@
+description: Add many Comments.
+tags:
+  - Comments
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - name: body
+    description: The body should contain a list of comment details.
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "comments"
+      properties:
+        comments:
+          type: "array"
+          items:
+            type: object
+          example: [
+            {
+              'video_id': 'VSB2vjWa1LA',
+              'author_id': 1,
+              'comment_id': 'Ugw4vrYGPEN-Q1aXdZx4AaABAg',
+              'comment_text': 'Wow my high school rnb reminds me of my ex back in coast ii miss u ABDILLAHI ABDALLA😍😜😘😘',
+              'like_count': 0,
+              'published_at': '2023-03-02T13:16:39Z',
+              'updated_at': '2023-03-02T13:16:39Z',
+              'parent_id': ''
+            }
+          ]
+responses:
+  201:
+    description: WHen the chanels is successfully added.
+
+  409:
+    description: Fails to add chanels since a similar one exists.

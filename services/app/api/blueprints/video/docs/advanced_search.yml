@@ -1,0 +1,52 @@
+description: Search for videos meeting a set of criteria.
+tags:
+  - Videos
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - name: body
+    description: The body should contain the query.
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "query"
+      properties:
+        query:
+          type: "object"
+          example: {
+            "comments_count": {
+              "gt": 500
+            },
+            "likes_count": {
+              "gte": 600
+            }
+          }
+        limit:
+          type: "int"
+          example: 10
+        offset:
+          type: "int"
+          example: 10
+        fields:
+          type: "array"
+          items:
+            type: "string"
+          example: ["video_id", "video_title"]
+        sort:
+          type: "object"
+          example: {
+            "field": "comments_count",
+            "order": "asc"
+          }
+responses:
+  201:
+    description: WHen the video  is successfully added.
+
+  409:
+    description: Fails to add video since a similar one exists.

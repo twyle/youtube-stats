@@ -1,0 +1,20 @@
+description: Get all the Playlist Videos.
+tags:
+  - Playlists
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - in: query
+    description: The query should contain the playlist id.
+    required: true
+    name: 'playlist_id'
+    type: 'string'
+
+responses:
+  200:
+    description: When all admins are successfully obtained.
+
+  400:
+    description: Fails to list all admins due to bad request data
