@@ -3,21 +3,34 @@ from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
 from http import HTTPStatus
 
+from ..database.schema.user import UserCreate, GetUser
+from ..database.crud.user import (
+    create_user, get_user_by_email, get_user
+)
+from ..database.database import get_db
+from pydantic import ValidationError
+
 
 auth = Blueprint("auth", __name__)
 
-
-@swag_from("./docs/register.yml", endpoint="auth.register_client", methods=["POST"])
 @auth.route("/register", methods=["POST"])
+@swag_from("./docs/register.yml", endpoint="auth.register_client", methods=["POST"])
 def register_client():
-    return {'success': 'registered'}, HTTPStatus.CREATED
+    user_data = UserCreate(**request.json)
+    if get_user_by_email(email=user_data.email_address, session=get_db):
+        return {'Error': f'User with email address {user_data.email_address} already exists.'}, HTTPStatus.CONFLICT
+    return create_user(user_data=user_data, session=get_db)
 
 
 @auth.route("/get", methods=["GET"])
 # @jwt_required()
 @swag_from("./docs/get.yml", endpoint="auth.get_client", methods=["GET"])
 def get_client():
-    return {'success': 'registered'}, HTTPStatus.CREATED
+    try:
+        user_data = GetUser(user_id=request.args.get('user_id'))
+    except ValidationError:
+        return {'error': 'Invalid input: you probably did not include the user id.'}, HTTPStatus.BAD_REQUEST
+    return get_user(session=get_db, user_data=user_data)
 
 
 @auth.route("/update", methods=["PUT"])

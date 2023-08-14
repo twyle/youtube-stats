@@ -15,7 +15,6 @@ parameters:
         - "last_name"
         - "email_address"
         - "password"
-        - "confirm_password"
       properties:
         first_name:
           type: "string"
@@ -27,9 +26,6 @@ parameters:
           type: "email"
           example: "lyle@gmail.com"
         password:
-          type: "string"
-          example: "password"
-        confirm_password:
           type: "string"
           example: "password"
 

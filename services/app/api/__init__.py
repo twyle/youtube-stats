@@ -11,7 +11,7 @@ from http import HTTPStatus
 from flask import Flask, jsonify
 
 # from .helpers.error_handlers import register_error_handlers
-# from .helpers.helpers import set_configuration
+from .config.set_config import set_configuration
 from .blueprints.register_blueprints import register_blueprints
 from .extensions.register_extensions import register_extensions
 
@@ -31,7 +31,7 @@ def create_app(flask_env: str = "development") -> Flask:
     """
     app = Flask(__name__)
 
-    # set_configuration(app, flask_env=flask_env)
+    set_configuration(app, flask_env=flask_env)
     # register_error_handlers(app)
     register_extensions(app)
     register_blueprints(app)
