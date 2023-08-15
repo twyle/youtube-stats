@@ -21,9 +21,13 @@ channels = Blueprint("channels", __name__)
 # @admin_token_required
 @swag_from("./docs/add.yml", endpoint="channels.add", methods=["POST"])
 def add():
-    channel_data = ChannelSchema(**request.json)
-    # if get_channel_by_email(email=user_data.email_address, session=get_db):
-    #     return {'Error': f'User with email address {user_data.email_address} already exists.'}, HTTPStatus.CONFLICT
+    try:
+        channel_data = ChannelSchema(**request.json)
+    except ValidationError:
+        return {'Error': 'Invalid channel data!'}, HTTPStatus.BAD_REQUEST
+    channel = get_channel(session=get_db, channel_data=channel_data)
+    if channel:
+        return {'Error': f'channel with id {channel_data.channel_id} already exists'}, HTTPStatus.CONFLICT
     channel = create_channel(channel_data=channel_data, session=get_db)
     resp = ChannelSchema(
         channel_description=channel.channel_description,
