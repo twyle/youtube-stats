@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 
 class Channel(BaseModel):
@@ -18,3 +19,7 @@ class Channels(BaseModel):
     
 class GetChannel(BaseModel):
     channel_id: str
+    
+class GetChannels(BaseModel):
+    offset: Optional[int] = 0
+    limit: Optional[int] = 10

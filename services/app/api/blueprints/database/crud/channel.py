@@ -2,7 +2,7 @@ from http import HTTPStatus
 from sqlalchemy.orm import Session
 from ..models.channel import Channel
 from ..schema.channel import (
-    Channel as ChannelSchema, Channels as ChannelsSchema, GetChannel
+    Channel as ChannelSchema, Channels as ChannelsSchema, GetChannel, GetChannels
     )
 from sqlalchemy.exc import IntegrityError
 
@@ -54,10 +54,10 @@ def get_channel(session: Session, channel_data: GetChannel):
         channel = db.query(Channel).filter(Channel.channel_id == channel_data.channel_id).first()
     return channel
 
-# def get_users(session: Session, user_data: GetUsers):
-#     with session() as db:
-#         users = db.query(User).offset(user_data.offset).limit(user_data.limit).all()
-#     return users
+def get_channels(session: Session, channel_data: GetChannels):
+    with session() as db:
+        channels = db.query(Channel).offset(channel_data.offset).limit(channel_data.limit).all()
+    return channels
 
 def delete_channel(session: Session, channel_data: GetChannel):
     with session() as db:

@@ -1,12 +1,21 @@
-description: Get all the admins
+description: Get all the Channels
 tags:
   - Channels
 produces:
   - "application/json"
 security:
   - APIKeyHeader: [ 'Authorization' ]
-get:
-  description: Get all the admins.
+parameters:
+  - in: query
+    description: The query should contain the number of channels to return.
+    required: false
+    name: 'limit'
+    type: 'int'
+  - in: query
+    description: The query should contain the number of channels to skip.
+    required: false
+    name: 'offset'
+    type: 'int'
 responses:
   200:
     description: When all admins are successfully obtained.
