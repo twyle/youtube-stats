@@ -3,9 +3,9 @@ from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
 from http import HTTPStatus
 
-from ..database.schema.user import UserCreate, GetUser
+from ..database.schema.user import UserCreate, GetUser, GetUsers, User as UserSchema
 from ..database.crud.user import (
-    create_user, get_user_by_email, get_user
+    create_user, get_user_by_email, get_user, get_users, delete_user
 )
 from ..database.database import get_db
 from pydantic import ValidationError
@@ -19,7 +19,15 @@ def register_client():
     user_data = UserCreate(**request.json)
     if get_user_by_email(email=user_data.email_address, session=get_db):
         return {'Error': f'User with email address {user_data.email_address} already exists.'}, HTTPStatus.CONFLICT
-    return create_user(user_data=user_data, session=get_db)
+    user = create_user(user_data=user_data, session=get_db)
+    resp = UserSchema(
+        first_name=user.first_name,
+        last_name=user.last_name,
+        email_address=user.email_address,
+        id=user.id
+    )
+    
+    return resp.model_dump_json(indent=4), HTTPStatus.CREATED
 
 
 @auth.route("/get", methods=["GET"])
@@ -30,8 +38,17 @@ def get_client():
         user_data = GetUser(user_id=request.args.get('user_id'))
     except ValidationError:
         return {'error': 'Invalid input: you probably did not include the user id.'}, HTTPStatus.BAD_REQUEST
-    return get_user(session=get_db, user_data=user_data)
-
+    user = get_user(session=get_db, user_data=user_data)
+    if user:
+        resp = UserSchema(
+            first_name=user.first_name,
+            last_name=user.last_name,
+            email_address=user.email_address,
+            id=user.id
+        )
+        return resp.model_dump_json(indent=4), HTTPStatus.OK
+    
+    return {'Error':f'No user with id {user_data.user_id}'}, HTTPStatus.NOT_FOUND
 
 @auth.route("/update", methods=["PUT"])
 # @jwt_required()
@@ -44,14 +61,33 @@ def update_client():
 # @admin_token_required
 @swag_from("./docs/delete.yml", endpoint="auth.delete_client", methods=["DELETE"])
 def delete_client():
-    return {'success': 'registered'}, HTTPStatus.CREATED
+    user = delete_user(get_db, GetUser(user_id=request.args.get('user_id')))
+    resp = UserSchema(
+        first_name=user.first_name,
+        last_name=user.last_name,
+        email_address=user.email_address,
+        id=user.id
+    )
+    return resp.model_dump_json(indent=4), HTTPStatus.OK
 
 
 @auth.route("/users", methods=["GET"])
 # @admin_token_required
 @swag_from("./docs/users.yml", endpoint="auth.list_all", methods=["GET"])
 def list_all():
-    return {'success': 'registered'}, HTTPStatus.CREATED
+    offset: str = request.args.get('offset')
+    limit: str = request.args.get('limit')
+    users = get_users(get_db, GetUsers(offset=offset, limit=limit))
+    users = [
+        UserSchema(
+            first_name=user.first_name,
+            last_name=user.last_name,
+            email_address=user.email_address,
+            id=user.id
+            ).dict()
+        for user in users
+    ]
+    return users, HTTPStatus.OK
 
 
 @swag_from("./docs/activate.yml", endpoint="auth.activate_account", methods=["GET"])

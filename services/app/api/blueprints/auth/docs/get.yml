@@ -8,7 +8,7 @@ security:
 parameters:
   - in: query
     description: The query should contain the user id.
-    required: true
+    required: false
     name: 'user_id'
     type: 'int'
 

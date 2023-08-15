@@ -22,5 +22,5 @@ class GetUser(BaseModel):
     user_id: int
     
 class GetUsers(BaseModel):
-    offset: Optional[int]
-    limit: Optional[int]
+    offset: Optional[int] = 0
+    limit: Optional[int] = 10

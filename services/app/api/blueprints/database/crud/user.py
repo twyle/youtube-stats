@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 from ....extensions.extensions import bcrypt
 from ..models.user import User
 from ..schema.user import User as UserSchema
-from ..schema.user import GetUser
+from ..schema.user import GetUser, GetUsers
+from typing import Optional
 
 
 def create_user(user_data: UserCreate, session: Session):
@@ -19,15 +20,7 @@ def create_user(user_data: UserCreate, session: Session):
         db.add(user)
         db.commit()
         db.refresh(user)
-        
-    resp = UserSchema(
-        first_name=user.first_name,
-        last_name=user.last_name,
-        email_address=user.email_address,
-        id=user.id
-    )
-    
-    return resp.model_dump_json(indent=4), HTTPStatus.CREATED
+    return user
 
 
 def get_user_by_email(session: Session, email: str):
@@ -38,13 +31,17 @@ def get_user_by_email(session: Session, email: str):
 def get_user(session: Session, user_data: GetUser):
     with session() as db:
         user = db.query(User).filter(User.id == user_data.user_id).first()
-        if user:
-            resp = UserSchema(
-            first_name=user.first_name,
-            last_name=user.last_name,
-            email_address=user.email_address,
-            id=user.id
-            )
-            return resp.model_dump_json(indent=4), HTTPStatus.OK
+    return user
+
+def get_users(session: Session, user_data: GetUsers):
+    with session() as db:
+        users = db.query(User).offset(user_data.offset).limit(user_data.limit).all()
+    return users
+
+def delete_user(session: Session, user_data: GetUser):
+    with session() as db:
+        user = db.query(User).filter(User.id == user_data.user_id).first()
+        db.delete(user)
+        db.commit()
         
-    return {'Error':f'No user with id {user_data.user_id}'}, HTTPStatus.NOT_FOUND
+    return user
