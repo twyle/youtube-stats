@@ -51,7 +51,8 @@ parameters:
           example: 391
         published_at:
           type: "string"
-          example: "TTT"
+          example: "2023-08-15 07:34:36.394345"
+          format: date-time
 responses:
   200:
     description: When the confirmation email is successffuly sent

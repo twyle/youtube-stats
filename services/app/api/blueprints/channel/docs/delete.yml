@@ -11,11 +11,6 @@ parameters:
     required: false
     name: 'channel_id'
     type: 'string'
-  - in: query
-    description: The query should contain the channel title.
-    required: false
-    name: 'channel_title'
-    type: 'string'
 
 responses:
   200:
