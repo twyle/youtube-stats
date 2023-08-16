@@ -18,3 +18,4 @@ class Playlist(Base):
     videos_count: Mapped[Optional[int]] = 0
     
     channel = relationship('Channel', back_populates='playlists')
+    videos = relationship('VideoPlaylist', back_populates='playlist')

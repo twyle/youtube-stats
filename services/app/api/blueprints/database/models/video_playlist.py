@@ -8,3 +8,6 @@ class VideoPlaylist(Base):
     
     video_id: Mapped[str] = mapped_column(ForeignKey('videos.video_id'), primary_key=True)
     playlist_id: Mapped[str] = mapped_column(ForeignKey('playlists.playlist_id'), primary_key=True)
+    
+    video = relationship('Video', back_populates='playlists')
+    playlist = relationship('Playlist', back_populates='videos')

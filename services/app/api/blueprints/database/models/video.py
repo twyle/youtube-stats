@@ -19,4 +19,6 @@ class Video(Base):
     video_duration: Mapped[str]
     
     channel = relationship('Channel', back_populates='videos')
+    comments = relationship('Comment', back_populates='video')
+    playlists = relationship('VideoPlaylist', back_populates='video')
     
