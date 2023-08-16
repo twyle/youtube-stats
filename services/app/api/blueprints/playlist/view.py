@@ -75,7 +75,25 @@ def delete():
 @swag_from("./docs/get.yml", endpoint="playlists.get", methods=["GET"])
 @playlists.route("/playlist", methods=["GET"])
 def get():
-    return {'success':'playlist'}, HTTPStatus.CREATED
+    try:
+        playlist_data = GetPlaylist(playlist_id=request.args.get('playlist_id'))
+    except ValidationError:
+        return {'error': 'Invalid input: you probably did not include the playlist id.'}, HTTPStatus.BAD_REQUEST
+    playlist = get_playlist(session=get_db, playlist_data=playlist_data)
+    if playlist:
+        resp = PlaylistSchema(
+            playlist_description=playlist.playlist_description,
+            playlist_id=playlist.playlist_id,
+            playlist_title=playlist.playlist_title,
+            playlist_thumbnail=playlist.playlist_thumbnail,
+            published_at=playlist.published_at,
+            privacy_status=playlist.privacy_status,
+            videos_count=playlist.videos_count,
+            channel_id=playlist.channel_id
+        )
+        return resp.model_dump_json(indent=4), HTTPStatus.OK
+    
+    return {'Error':f'No channel with id {playlist_data.playlist_id}'}, HTTPStatus.NOT_FOUND
 
 
 @playlists.route("/", methods=["POST"])
