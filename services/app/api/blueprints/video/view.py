@@ -29,6 +29,7 @@ def add():
         return {'Error': f'video with id {video_data.video_id} already exists'}, HTTPStatus.CONFLICT
     video = create_video(video_data=video_data, session=get_db)
     resp = VideoSchema(
+        channel_id=video.channel_id,
         video_description=video.video_description,
         video_id=video.video_id,
         video_title=video.video_title,
@@ -64,6 +65,7 @@ def get():
     video = get_video(session=get_db, video_data=video_data)
     if video:
         resp = VideoSchema(
+            channel_id=video.channel_id,
             video_description=video.video_description,
             video_id=video.video_id,
             video_title=video.video_title,
@@ -99,6 +101,7 @@ def delete():
         return {'Error': f'video with id {video_data.video_id} does not exists'}, HTTPStatus.NOT_FOUND
     video = delete_video(get_db, GetVideo(video_id=request.args.get('video_id')))
     resp = VideoSchema(
+        channel_id=video.channel_id,
         video_description=video.video_description,
         video_id=video.video_id,
         video_title=video.video_title,
@@ -121,6 +124,7 @@ def list_all():
     videos = get_videos(get_db, GetVideos(offset=offset, limit=limit))
     videos = [
         VideoSchema(
+            channel_id=video.channel_id,
             video_description=video.video_description,
             video_id=video.video_id,
             video_title=video.video_title,
@@ -129,7 +133,7 @@ def list_all():
             views_count=video.views_count,
             likes_count=video.likes_count,
             comments_count=video.comments_count,
-            video_duration=video.video_durationl
+            video_duration=video.video_duration
         ).dict()
         for video in videos
     ]

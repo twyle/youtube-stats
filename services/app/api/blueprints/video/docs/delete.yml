@@ -11,11 +11,6 @@ parameters:
     required: false
     name: 'video_id'
     type: 'string'
-  - in: query
-    description: The query should contain the video title.
-    required: false
-    name: 'video_title'
-    type: 'string'
 
 responses:
   200:

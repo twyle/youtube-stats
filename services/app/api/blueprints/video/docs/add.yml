@@ -17,7 +17,7 @@ parameters:
       required:
         - "video_id"
         - "video_title"
-        - "channel_title"
+        - "channel_id"
         - "video_description"
         - "video_thumbnail"
         - "video_duration"
@@ -32,9 +32,9 @@ parameters:
         video_title:
           type: "string"
           example: "Your Brain: Perception Deception | Full Documentary | NOVA | PBS"
-        channel_title:
+        channel_id:
           type: "string"
-          example: "Channel Title"
+          example: "HU6LfXNeQM4"
         video_description:
           type: "string"
           example: "Video Description."
@@ -53,9 +53,10 @@ parameters:
         comments_count:
           type: "int"
           example: 391
-        date_published:
+        published_at:
           type: "string"
-          example: "2023-05-21"
+          example: "2023-08-15 07:34:36.394345"
+          format: date-time
 responses:
   201:
     description: WHen the video  is successfully added.

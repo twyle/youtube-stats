@@ -9,6 +9,7 @@ from sqlalchemy.exc import IntegrityError
 
 def create_video(video_data: VideoSchema, session: Session):
     video = Video(
+        channel_id=video_data.channel_id,
         video_description=video_data.video_description,
         video_id=video_data.video_id,
         video_title=video_data.video_title,
@@ -31,6 +32,7 @@ def create_many(session: Session, videos_data: VideosSchema):
     with session() as db:
         for video in videos_data.videos:
             video = Video(
+                channel_id=video.channel_id,
                 video_description=video.video_description,
                 video_id=video.video_id,
                 video_title=video.video_title,

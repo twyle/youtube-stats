@@ -25,14 +25,14 @@ parameters:
             {
               'video_id': 'HU6LfXNeQM4',
               'video_title': 'Video title',
-              'channel_title': 'Channel Title',
+              'channel_id': 'HU6LfXNeQM4',
               'video_description': 'Video Description.',
               'video_thumbnail': 'http://heath-barton.com/',
               'video_duration': '8T',
               'views_count': 123465,
               'likes_count': 234,
               'comments_count': 543,
-              'date_published': '2023-05-21'
+              'published_at': '2023-08-15 07:34:36.394345'
             }
           ]
 responses:
