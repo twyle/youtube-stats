@@ -66,3 +66,12 @@ def delete_channel(session: Session, channel_data: GetChannel):
         db.commit()
         
     return channel
+
+
+def get_channel_playlists(session: Session, channel_data: GetChannel):
+    playlists = []
+    with session() as db:
+        channel: Channel = db.query(Channel).filter(Channel.channel_id == channel_data.channel_id).first()
+        playlists = channel.playlists
+    return playlists
+        

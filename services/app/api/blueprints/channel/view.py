@@ -2,11 +2,13 @@ from flasgger import swag_from
 from flask import Blueprint
 from flask_jwt_extended import jwt_required
 from ..database.crud.channel import (
-    create_channel, create_many, get_channel, delete_channel, get_channels
+    create_channel, create_many, get_channel, delete_channel, get_channels,
+    get_channel_playlists
 )
 from ..database.schema.channel import (
     Channel as ChannelSchema, Channels as ChannelsSchema, GetChannel, GetChannels
 )
+from ..database.schema.playlist import Playlist as PlaylistSchema
 from ..database.database import get_db
 from http import HTTPStatus
 from pydantic import ValidationError
@@ -148,7 +150,31 @@ def channel_videos():
 # @jwt_required()
 @swag_from("./docs/videos.yml", endpoint="channels.channel_playlists", methods=["GET"])
 def channel_playlists():
-    return {'success':'channel'}, HTTPStatus.CREATED
+    try:
+        channel_data = GetChannel(channel_id=request.args.get('channel_id'))
+    except ValidationError:
+        return {'error': 'Invalid input: you probably did not include the channel id.'}, HTTPStatus.BAD_REQUEST
+    channel = get_channel(session=get_db, channel_data=channel_data)
+    if not channel:
+        return {'Error': f'channel with id {channel_data.channel_id} does not exists'}, HTTPStatus.NOT_FOUND
+    playlists = get_channel_playlists(session=get_db, channel_data=channel_data)
+    if playlists:
+        channel_playlists = [
+            PlaylistSchema(
+                playlist_description=playlist.playlist_description,
+                playlist_id=playlist.playlist_id,
+                playlist_title=playlist.playlist_title,
+                playlist_thumbnail=playlist.playlist_thumbnail,
+                published_at=playlist.published_at,
+                privacy_status=playlist.privacy_status,
+                videos_count=playlist.videos_count,
+                channel_id=playlist.channel_id
+            ).dict()
+            for playlist in playlists 
+        ]
+        return channel_playlists, HTTPStatus.OK
+    else:
+        return []
 
 
 @channels.route("/channel/comments", methods=["GET"])

@@ -6,6 +6,5 @@ from sqlalchemy import ForeignKey
 class VideoPlaylist(Base):
     __tablename__ = 'video_playlist'
     
-    id: Mapped[int] = mapped_column(primary_key=True)
-    video_id: Mapped[str] = mapped_column(ForeignKey('videos.video_id'))
-    playlist_id: Mapped[str] = mapped_column(ForeignKey('playlists.playlist_id'))
+    video_id: Mapped[str] = mapped_column(ForeignKey('videos.video_id'), primary_key=True)
+    playlist_id: Mapped[str] = mapped_column(ForeignKey('playlists.playlist_id'), primary_key=True)

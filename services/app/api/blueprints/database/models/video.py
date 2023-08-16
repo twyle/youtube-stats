@@ -11,11 +11,12 @@ class Video(Base):
     video_title: Mapped[str]
     channel_id: Mapped[str] = mapped_column(ForeignKey('channels.channel_id'))
     published_at: Mapped[datetime]
-    custom_url: Mapped[str]
     video_description: Mapped[str]
     video_thumbnail: Mapped[str]
     views_count: Mapped[int]
     likes_count: Mapped[int]
     comments_count: Mapped[int]
     video_duration: Mapped[str]
+    
+    channel = relationship('Channel', back_populates='videos')
     

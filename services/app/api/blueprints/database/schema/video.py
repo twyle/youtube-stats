@@ -8,7 +8,6 @@ class Video(BaseModel):
     video_title: str
     channel_id: str
     published_at: datetime
-    custom_url: str
     video_description: str
     video_thumbnail: str
     views_count: int

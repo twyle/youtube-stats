@@ -2,7 +2,6 @@ from ..database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 from datetime import datetime
-from .channel import Channel
 from typing import Optional
 
 
@@ -17,3 +16,5 @@ class Playlist(Base):
     playlist_thumbnail: Mapped[str]
     privacy_status: Mapped[Optional[str]] = 'public'
     videos_count: Mapped[Optional[int]] = 0
+    
+    channel = relationship('Channel', back_populates='playlists')

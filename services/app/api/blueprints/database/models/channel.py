@@ -16,3 +16,6 @@ class Channel(Base):
     videos_count: Mapped[int]
     subscribers_count: Mapped[int] = 0
     
+    playlists = relationship('Playlist', back_populates='channel')
+    videos = relationship('Video', back_populates='channel')
+    
