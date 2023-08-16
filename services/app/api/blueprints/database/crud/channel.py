@@ -61,7 +61,7 @@ def get_channels(session: Session, channel_data: GetChannels):
 
 def delete_channel(session: Session, channel_data: GetChannel):
     with session() as db:
-        channel = db.query(Channel).filter(Channel.id == channel_data.channel_id).first()
+        channel = db.query(Channel).filter(Channel.channel_id == channel_data.channel_id).first()
         db.delete(channel)
         db.commit()
         

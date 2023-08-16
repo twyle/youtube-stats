@@ -14,9 +14,7 @@ from flask import Flask
 from .admin.view import admin
 from .auth.view import auth
 from .channel.view import channels
-from .comment_author.view import comment_authors
 from .comment.view import comments
-from .playlist_item.view import playlist_items
 from ..blueprints.playlist.view import playlists
 from .video.view import videos
 
@@ -34,6 +32,4 @@ def register_blueprints(app: Flask) -> None:
     app.register_blueprint(channels, url_prefix="/api/v1/channels")
     app.register_blueprint(admin, url_prefix="/api/v1/admin")
     app.register_blueprint(playlists, url_prefix="/api/v1/playlists")
-    app.register_blueprint(playlist_items, url_prefix="/api/v1/playlist_items")
-    app.register_blueprint(comment_authors, url_prefix="/api/v1/comment_authors")
     app.register_blueprint(comments, url_prefix="/api/v1/comments")

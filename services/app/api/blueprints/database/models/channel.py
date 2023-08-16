@@ -1,5 +1,5 @@
 from ..database import Base
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 
 
@@ -15,3 +15,4 @@ class Channel(Base):
     views_count: Mapped[int]
     videos_count: Mapped[int]
     subscribers_count: Mapped[int] = 0
+    
