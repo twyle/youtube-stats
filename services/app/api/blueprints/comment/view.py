@@ -71,7 +71,25 @@ def delete():
 @swag_from("./docs/get.yml", endpoint="comments.get", methods=["GET"])
 @comments.route("/comment", methods=["GET"])
 def get():
-    return {'comment': 'created'}, HTTPStatus.CREATED
+    try:
+        comment_data = GetComment(comment_id=request.args.get('comment_id'))
+    except ValidationError:
+        return {'error': 'Invalid input: you probably did not include the comment id.'}, HTTPStatus.BAD_REQUEST
+    comment = get_comment(session=get_db, comment_data=comment_data)
+    if comment:
+        resp = CommentSchema(
+            comment_id=comment.comment_id,
+            video_id=comment.video_id,
+            parent_id=comment.parent_id,
+            comment_text=comment.comment_text,
+            like_count=comment.like_count,
+            published_at=comment.published_at,
+            updated_at=comment.updated_at,
+            author_id=comment.author_id
+        )
+        return resp.model_dump_json(indent=4), HTTPStatus.OK
+    
+    return {'Error':f'No comment with id {comment_data.comment_id}'}, HTTPStatus.NOT_FOUND
 
 
 @comments.route("/", methods=["POST"])

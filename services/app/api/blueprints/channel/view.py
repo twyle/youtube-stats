@@ -162,7 +162,7 @@ def channel_videos():
                 likes_count=video.likes_count,
                 comments_count=video.comments_count,
                 video_duration=video.video_duration
-            ).dict()
+            ).model_dump()
             for video in videos 
         ]
         return channel_videos, HTTPStatus.OK
@@ -193,7 +193,7 @@ def channel_playlists():
                 privacy_status=playlist.privacy_status,
                 videos_count=playlist.videos_count,
                 channel_id=playlist.channel_id
-            ).dict()
+            ).model_dump()
             for playlist in playlists 
         ]
         return channel_playlists, HTTPStatus.OK
