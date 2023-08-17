@@ -1,7 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, MappedAsDataclass
 from sqlalchemy.orm import sessionmaker
-from flask import current_app
 import os
 from contextlib import contextmanager
 

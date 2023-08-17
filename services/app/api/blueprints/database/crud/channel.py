@@ -74,4 +74,12 @@ def get_channel_playlists(session: Session, channel_data: GetChannel):
         channel: Channel = db.query(Channel).filter(Channel.channel_id == channel_data.channel_id).first()
         playlists = channel.playlists
     return playlists
+
+
+def get_channel_videos(session: Session, channel_data: GetChannel):
+    videos = []
+    with session() as db:
+        channel: Channel = db.query(Channel).filter(Channel.channel_id == channel_data.channel_id).first()
+        videos = channel.videos
+    return videos
         

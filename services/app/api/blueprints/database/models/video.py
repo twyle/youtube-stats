@@ -2,6 +2,7 @@ from ..database import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 from datetime import datetime
+from .video_playlist import VideoPlaylist
 
 
 class Video(Base):
@@ -20,5 +21,5 @@ class Video(Base):
     
     channel = relationship('Channel', back_populates='videos')
     comments = relationship('Comment', back_populates='video')
-    playlists = relationship('VideoPlaylist', back_populates='video')
+    playlists = relationship(VideoPlaylist, back_populates='video')
     

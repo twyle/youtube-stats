@@ -3,7 +3,7 @@ from flask import Blueprint
 from flask_jwt_extended import jwt_required
 from ..database.crud.channel import (
     create_channel, create_many, get_channel, delete_channel, get_channels,
-    get_channel_playlists
+    get_channel_playlists, get_channel_videos
 )
 from ..database.schema.channel import (
     Channel as ChannelSchema, Channels as ChannelsSchema, GetChannel, GetChannels
@@ -13,6 +13,7 @@ from ..database.database import get_db
 from http import HTTPStatus
 from pydantic import ValidationError
 from flask import request
+from ..database.schema.video import Video as VideoSchema
 
 #from ..decorators import admin_token_required
 
@@ -141,14 +142,37 @@ def list_all_channels():
 
 @channels.route("/channel/videos", methods=["GET"])
 # @jwt_required()
-@swag_from("./docs/add.yml", endpoint="channels.channel_Channels", methods=["GET"])
+@swag_from("./docs/videos.yml", endpoint="channels.channel_videos", methods=["GET"])
 def channel_videos():
-    return {'success':'channel'}, HTTPStatus.CREATED
+    try:
+        channel_data = GetChannel(channel_id=request.args.get('channel_id'))
+    except ValidationError:
+        return {'error': 'Invalid input: you probably did not include the channel id.'}, HTTPStatus.BAD_REQUEST
+    videos = get_channel_videos(session=get_db, channel_data=channel_data)
+    if videos:
+        channel_videos = [
+            VideoSchema(
+                channel_id=video.channel_id,
+                video_description=video.video_description,
+                video_id=video.video_id,
+                video_title=video.video_title,
+                video_thumbnail=video.video_thumbnail,
+                published_at=video.published_at,
+                views_count=video.views_count,
+                likes_count=video.likes_count,
+                comments_count=video.comments_count,
+                video_duration=video.video_duration
+            ).dict()
+            for video in videos 
+        ]
+        return channel_videos, HTTPStatus.OK
+    else:
+        return []
 
 
 @channels.route("/channel/playlists", methods=["GET"])
 # @jwt_required()
-@swag_from("./docs/videos.yml", endpoint="channels.channel_playlists", methods=["GET"])
+@swag_from("./docs/playlists.yml", endpoint="channels.channel_playlists", methods=["GET"])
 def channel_playlists():
     try:
         channel_data = GetChannel(channel_id=request.args.get('channel_id'))
@@ -175,10 +199,3 @@ def channel_playlists():
         return channel_playlists, HTTPStatus.OK
     else:
         return []
-
-
-@channels.route("/channel/comments", methods=["GET"])
-# @jwt_required()
-@swag_from("./docs/add.yml", endpoint="channels.channel_comments", methods=["GET"])
-def channel_comments():
-    return {'success':'channel'}, HTTPStatus.CREATED
