@@ -131,12 +131,6 @@ def list_all_playlists():
     return playlists, HTTPStatus.OK
 
 
-@swag_from("./docs/channel.yml", endpoint="playlists.channel_playlists", methods=["GET"])
-@playlists.route("/channel/", methods=["GET"])
-def channel_playlists():
-    return {'success':'playlist'}, HTTPStatus.CREATED
-
-
 @swag_from("./docs/playlist_videos.yml", endpoint="playlists.videos", methods=["GET"])
 @playlists.route("/playlist/videos", methods=["GET"])
 def videos():

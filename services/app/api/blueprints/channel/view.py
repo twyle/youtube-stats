@@ -28,7 +28,7 @@ def add():
         channel_data = ChannelSchema(**request.json)
     except ValidationError:
         return {'Error': 'Invalid channel data!'}, HTTPStatus.BAD_REQUEST
-    channel = get_channel(session=get_db, channel_data=channel_data)
+    channel = get_channel(session=get_db, channel_data=GetChannel(channel_id=channel_data.channel_id))
     if channel:
         return {'Error': f'channel with id {channel_data.channel_id} already exists'}, HTTPStatus.CONFLICT
     channel = create_channel(channel_data=channel_data, session=get_db)
@@ -134,7 +134,7 @@ def list_all_channels():
             videos_count=channel.videos_count,
             subscribers_count=channel.subscribers_count,
             custom_url=channel.custom_url
-        ).dict()
+        ).model_dump()
         for channel in channels
     ]
     return channels, HTTPStatus.OK

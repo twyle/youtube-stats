@@ -16,11 +16,11 @@ parameters:
       type: object
       required:
         - "video_id"
-        - "author_id"
+        - "author"
         - "comment_id"
         - "comment_text"
         - "like_count"
-        - "published_at"
+        - "published_at" 
         - "updated_at"
         - "parent_id"
 
@@ -28,9 +28,14 @@ parameters:
         video_id:
           type: "string"
           example: "VSB2vjWa1LA"
-        author_id:
-          type: "int"
-          example: 1
+        author:
+          type: object
+          example: {
+            'author_profile_image_url': 'profile url',
+            'author_channel_url': 'channel url',
+            'author_channel_id': 'channel id',
+            'author_display_name': 'author name'
+          }
         comment_id:
           type: "string"
           example: "Ugw4vrYGPEN-Q1aXdZx4AaABAg"
@@ -39,16 +44,17 @@ parameters:
           example: "Wow my high school rnb reminds me of my ex back in coast ii miss u ABDILLAHI ABDALLA😍😜😘😘."
         like_count:
           type: "int"
-          example: 0
+          example: 10
         published_at:
           type: "string"
-          example: "2023-03-02T13:16:39Z"
+          example: "2023-08-15 07:34:36.394345"
+          format: date-time
         updated_at:
           type: "string"
-          example: '2023-03-02T13:16:39Z' 
+          example: "2023-08-15 07:34:36.394345" 
         parent_id:
           type: "string"
-          example: ''
+          example: 'Ugw4vrYGPEN-Q1bXdZx4AaABAg'
 
 responses:
   200:

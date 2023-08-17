@@ -24,13 +24,18 @@ parameters:
           example: [
             {
               'video_id': 'VSB2vjWa1LA',
-              'author_id': 1,
+              'author': {
+                  'author_profile_image_url': 'profile url',
+                  'author_channel_url': 'channel url',
+                  'author_channel_id': 'channel id',
+                  'author_display_name': 'author name'
+              },
               'comment_id': 'Ugw4vrYGPEN-Q1aXdZx4AaABAg',
               'comment_text': 'Wow my high school rnb reminds me of my ex back in coast ii miss u ABDILLAHI ABDALLA😍😜😘😘',
-              'like_count': 0,
+              'like_count': 10,
               'published_at': '2023-03-02T13:16:39Z',
               'updated_at': '2023-03-02T13:16:39Z',
-              'parent_id': ''
+              'parent_id': 'Ugw4vrYGPEN-Q1aXdZx4AaABAik'
             }
           ]
 responses:

@@ -9,7 +9,7 @@ parameters:
   - in: query
     description: The query should contain the comment id.
     required: false
-    name: 'id'
+    name: 'comment_id'
     type: 'int'
 
 responses:

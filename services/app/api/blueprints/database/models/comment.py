@@ -22,7 +22,7 @@ class Comment(Base):
     
     comment_id: Mapped[str] = mapped_column(primary_key=True)
     video_id: Mapped[str] = mapped_column(ForeignKey('videos.video_id'))
-    author_id: Mapped[str] = mapped_column(ForeignKey('authors.author_id'))
+    author_id: Mapped[str] = mapped_column(ForeignKey('authors.author_id'), init=False)
     parent_id: Mapped[Optional[str]]
     comment_text: Mapped[str]
     like_count: Mapped[int]
