@@ -70,3 +70,11 @@ class User(Base):
             return jwt.encode(payload, current_app.config.get("SECRET_KEY"), algorithm="HS256")
         except Exception as e:
             return e
+     
+    @staticmethod   
+    def decode_password_token(auth_token: str):
+        try:
+            payload = jwt.decode(auth_token, current_app.config.get("SECRET_KEY"), algorithms="HS256")
+            return payload["sub"]
+        except (ExpiredSignatureError, InvalidTokenError) as e:
+            raise e

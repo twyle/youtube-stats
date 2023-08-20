@@ -49,3 +49,9 @@ class RequestPasswordReset(BaseModel):
     
 class RequestPasswordResetToken(RequestPasswordReset):
     password_reset_token: str
+    
+class PasswordReset(BaseModel):
+    email_address: str
+    password_reset_token: str
+    password: str
+    confirm_password: str

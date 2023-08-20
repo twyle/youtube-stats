@@ -6,11 +6,13 @@ from http import HTTPStatus
 
 from ..database.schema.user import (
     UserCreate, GetUser, GetUsers, User as UserSchema, UserCreated as UserCreatedSchema,
-    ActivateUser, LoginUser, LoggedInUser, RequestPasswordReset, RequestPasswordResetToken
+    ActivateUser, LoginUser, LoggedInUser, RequestPasswordReset, RequestPasswordResetToken,
+    PasswordReset
 )
 from ..database.crud.user import (
     create_user, get_user_by_email, get_user, get_users, delete_user, user_account_active,
-    activate_user_account, loggin_user, generate_password_reset_token
+    activate_user_account, loggin_user, generate_password_reset_token, password_repeated,
+    reset_password
 )
 from ..database.models.user import User
 from ..database.database import get_db
@@ -170,11 +172,30 @@ def request_client_password_reset():
     return resp, HTTPStatus.OK
 
 
-@swag_from("./docs/reset_password.yml", endpoint="auth.reset_password", methods=["POST"])
+@swag_from("./docs/reset_password.yml", endpoint="auth.reset_client_password", methods=["POST"])
 @auth.route("/reset_password", methods=["POST"])
 def reset_client_password():
     """Reset a client password."""
-    return {'success': 'registered'}, HTTPStatus.CREATED
+    try:
+        password_reset = PasswordReset(**request.json)
+    except ValidationError:
+        return {'Error': 'Invalid password rest data.'}, HTTPStatus.BAD_REQUEST
+    if password_reset.password != password_reset.confirm_password:
+        return {'Error': 'The two passwords do not match'}, HTTPStatus.BAD_REQUEST 
+    user = get_user_by_email(email=password_reset.email_address, session=get_db)
+    if not user:
+        return {'Error': f'User with email address {password_reset.email_address} does not exist.'}, HTTPStatus.CONFLICT
+    if not user_account_active(session=get_db, user_data=GetUser(user_id=user.id)):
+        return {'Error': f'You cannot rest the password for an unactivated account.'}
+    
+    if password_repeated(session=get_db, password_reset=password_reset):
+        return {'Error': 'You have used this password before.'}
+    try:
+        reset_password(session=get_db, password_reset=password_reset)
+    except (ExpiredSignatureError, InvalidTokenError):
+        return {'Error': 'Invalid or Expired password reset token.'}, HTTPStatus.FORBIDDEN
+    else:
+        return {'Success': f'Password for account with email {password_reset.email_address} succesfully changed.'}
 
 
 @auth.route("/refresh_token", methods=["POST"])

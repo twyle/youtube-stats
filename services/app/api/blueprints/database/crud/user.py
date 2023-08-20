@@ -4,7 +4,9 @@ from sqlalchemy.orm import Session
 from ....extensions.extensions import bcrypt
 from ..models.user import User
 from ..schema.user import User as UserSchema
-from ..schema.user import GetUser, GetUsers, ActivateUser, LoginUser, RequestPasswordReset
+from ..schema.user import (
+    GetUser, GetUsers, ActivateUser, LoginUser, RequestPasswordReset, PasswordReset
+)
 from typing import Optional
 from jwt import ExpiredSignatureError, InvalidTokenError
 
@@ -81,3 +83,19 @@ def generate_password_reset_token(session: Session, reset_password_request: Requ
         'password_reset_token': user.generate_password_reset_token()
     }
     return resp
+
+
+def password_repeated(session: Session, password_reset: PasswordReset):
+    with session() as db:
+        user: User = db.query(User).filter(User.email_address == password_reset.email_address).first()
+    return user.check_password(password_reset.password)
+
+
+def reset_password(session: Session, password_reset: PasswordReset):
+    with session() as db:
+        user: User = db.query(User).filter(User.email_address == password_reset.email_address).first()
+        email_address = user.decode_password_token(password_reset.password_reset_token)
+        if email_address == user.email_address:
+            user.password = user.hash_password(password_reset.password)
+            db.commit()
+            return True
