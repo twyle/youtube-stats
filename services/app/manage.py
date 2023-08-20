@@ -14,11 +14,5 @@ def create_db():
     create_all()
 
 
-# @cli.command("seed_db")
-# def seed_db():
-#     """Create the database records."""
-#     add_channel_playlists('UC5WVOSvL9bc6kwCMXXeFLLw')
-
-
 if __name__ == "__main__":
     cli()

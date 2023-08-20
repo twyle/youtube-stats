@@ -1,0 +1,10 @@
+black==23.3.0
+faker
+flake8==6.0.0
+isort==5.12.0
+recommonmark
+requests
+sphinx
+sphinx_rtd_theme
+commitizen==3.6.0
+pre-commit==3.3.3

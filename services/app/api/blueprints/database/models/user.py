@@ -12,3 +12,4 @@ class User(Base):
     email_address: Mapped[str] = mapped_column(unique=True)
     password: Mapped[str]
     registration_date: Mapped[datetime] = mapped_column(default_factory=datetime.utcnow)
+    role: Mapped[str] = mapped_column(default='user')
