@@ -1,14 +1,21 @@
 from flasgger import swag_from
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required
+from flask_jwt_extended import create_access_token, create_refresh_token
 from http import HTTPStatus
 
-from ..database.schema.user import UserCreate, GetUser, GetUsers, User as UserSchema
-from ..database.crud.user import (
-    create_user, get_user_by_email, get_user, get_users, delete_user
+from ..database.schema.user import (
+    UserCreate, GetUser, GetUsers, User as UserSchema, UserCreated as UserCreatedSchema,
+    ActivateUser, LoginUser, LoggedInUser, RequestPasswordReset, RequestPasswordResetToken
 )
+from ..database.crud.user import (
+    create_user, get_user_by_email, get_user, get_users, delete_user, user_account_active,
+    activate_user_account, loggin_user, generate_password_reset_token
+)
+from ..database.models.user import User
 from ..database.database import get_db
 from pydantic import ValidationError
+from jwt import ExpiredSignatureError, InvalidTokenError
 
 
 auth = Blueprint("auth", __name__)
@@ -20,13 +27,13 @@ def register_client():
     if get_user_by_email(email=user_data.email_address, session=get_db):
         return {'Error': f'User with email address {user_data.email_address} already exists.'}, HTTPStatus.CONFLICT
     user = create_user(user_data=user_data, session=get_db)
-    resp = UserSchema(
+    resp = UserCreatedSchema(
         first_name=user.first_name,
         last_name=user.last_name,
         email_address=user.email_address,
-        id=user.id
+        id=user.id,
+        activation_token=User.encode_auth_token(user.id)
     )
-    
     return resp.model_dump_json(indent=4), HTTPStatus.CREATED
 
 
@@ -91,7 +98,7 @@ def list_all():
             last_name=user.last_name,
             email_address=user.email_address,
             id=user.id
-            ).dict()
+            ).model_dump()
         for user in users
     ]
     return users, HTTPStatus.OK
@@ -101,25 +108,66 @@ def list_all():
 @auth.route("/activate", methods=["GET"])
 def activate_account():
     """Activate User account."""
-    return {'success': 'registered'}, HTTPStatus.CREATED
-
+    try:
+        activation_data = ActivateUser(**request.args)
+    except ValidationError:
+        return {'Error': 'Missing token or user id.'}, HTTPStatus.BAD_REQUEST
+    if not get_user(user_data=GetUser(user_id=activation_data.user_id), session=get_db):
+        return {'Error': f'User with id {activation_data.user_id} does not exists'}, HTTPStatus.NOT_FOUND
+    if user_account_active(session=get_db, user_data=GetUser(user_id=activation_data.user_id)):
+        return {'Error': f'Account with id {activation_data.user_id} is already activated.'}
+    try:
+        activate_user_account(session=get_db, activation_data=activation_data)
+    except (ExpiredSignatureError, InvalidTokenError):
+        return {'Error': 'Invalid or Expired activation token.'}, HTTPStatus.FORBIDDEN
+    else:
+        return {'Success': f'Account with id {activation_data.user_id} activated!'}
 
 @swag_from("./docs/login.yml", endpoint="auth.login_client", methods=["POST"])
 @auth.route("/login", methods=["POST"])
 def login_client():
     """Login a registered, confirmed client."""
-    return {'success': 'registered'}, HTTPStatus.CREATED
-
+    try:
+        login_data = LoginUser(**request.json)
+    except ValidationError:
+        return {'Error': 'Missing password and or email address.'}, HTTPStatus.BAD_REQUEST
+    user = get_user_by_email(email=login_data.email_address, session=get_db)
+    if user:
+        if not user_account_active(session=get_db, user_data=GetUser(user_id=user.id)):
+            return {'Error': f'Account with email address {login_data.email_address} is not activated.'}
+    try:
+        loggin_user(session=get_db, login_data=login_data)
+    except ValueError:
+        return {'Error': 'Invlaid email address and or password.'}, HTTPStatus.UNAUTHORIZED
+    else:
+        resp = LoggedInUser(
+            email_address=login_data.email_address,
+            access_token=create_access_token(user.id),
+            refresh_token=create_refresh_token(user.id)
+        ).model_dump_json()
+        return resp, HTTPStatus.OK
 
 @swag_from(
-    "./docs/password_reset.yml",
+    "./docs/password_reset_request.yml",
     endpoint="auth.request_client_password_reset",
     methods=["GET"],
 )
 @auth.route("/request_password_reset", methods=["GET"])
-def request_client_password_rest():
+def request_client_password_reset():
     """Request a client password reset."""
-    return {'success': 'registered'}, HTTPStatus.CREATED
+    try:
+        password_reset_request = RequestPasswordReset(**request.args)
+    except ValidationError:
+        return {'Error': 'Missing user id and or email address.'}, HTTPStatus.BAD_REQUEST
+    user_by_id = get_user(session=get_db, user_data=GetUser(user_id=password_reset_request.user_id))
+    user_by_email = get_user_by_email(email=password_reset_request.email_address, session=get_db)
+    if not user_by_id or not user_by_email or not user_by_email.id == user_by_id.id:
+        return {'Error': f'User with id {password_reset_request.user_id} and or email {password_reset_request.email_address} does not exists'}, HTTPStatus.NOT_FOUND
+    if not user_account_active(session=get_db, user_data=GetUser(user_id=password_reset_request.user_id)):
+        return {'Error': 'You cannot reset the password for an account that has not been activated.'}
+    password_reset_token = generate_password_reset_token(session=get_db, reset_password_request=password_reset_request)
+    resp = RequestPasswordResetToken(**password_reset_token).model_dump_json()
+    return resp, HTTPStatus.OK
 
 
 @swag_from("./docs/reset_password.yml", endpoint="auth.reset_password", methods=["POST"])

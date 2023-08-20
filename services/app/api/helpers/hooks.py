@@ -1,6 +1,6 @@
 import json
 
-from flask import request
+from flask import request, Flask
 
 from ..config.logger_config import app_logger
 
@@ -63,3 +63,31 @@ def get_exception(exc):
     """Log exceptions"""
     if exc:
         app_logger.warning(f"{exc.__class__.__name__ }: {str(exc)}")
+        
+        
+def register_app_hooks(app: Flask):
+    @app.before_first_request
+    def application_startup():
+        """Log the beginning of the application."""
+        app_logger.info('Web app is up!')
+
+    @app.before_request
+    def log_request():
+        """Log the data held in the request"""
+        if request.method in ['POST', 'PUT']:
+            log_post_request()
+        elif request.method in ['GET', 'DELETE']:
+            log_get_request()
+
+    @app.after_request
+    def log_response(response):
+        try:
+            get_response(response)
+        except Exception:
+            pass
+        finally:
+            return response
+
+    @app.teardown_request
+    def log_exception(exc):
+        get_exception(exc)

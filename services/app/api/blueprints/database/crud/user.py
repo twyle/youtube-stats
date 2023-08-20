@@ -4,8 +4,9 @@ from sqlalchemy.orm import Session
 from ....extensions.extensions import bcrypt
 from ..models.user import User
 from ..schema.user import User as UserSchema
-from ..schema.user import GetUser, GetUsers
+from ..schema.user import GetUser, GetUsers, ActivateUser, LoginUser, RequestPasswordReset
 from typing import Optional
+from jwt import ExpiredSignatureError, InvalidTokenError
 
 
 def create_user(user_data: UserCreate, session: Session):
@@ -45,3 +46,38 @@ def delete_user(session: Session, user_data: GetUser):
         db.commit()
         
     return user
+
+
+def user_account_active(session: Session, user_data: GetUser):
+    with session() as db:
+        user: User = db.query(User).filter(User.id == user_data.user_id).first()
+    return user.activated
+
+
+def activate_user_account(session: Session, activation_data: ActivateUser):
+    with session() as db:
+        user: User = db.query(User).filter(User.id == activation_data.user_id).first()
+        if user.id == User.decode_auth_token(activation_data.activation_token):
+            user.activated = True
+            db.commit()
+            return True
+    raise InvalidTokenError('Invalid or Expired token.')
+
+
+def loggin_user(session: Session, login_data: LoginUser):
+    with session() as db:
+        user: User = db.query(User).filter(User.email_address == login_data.email_address).first()
+        if user and user.check_password(login_data.password):
+            return True
+    raise ValueError('Invalid email address and or password.')
+
+
+def generate_password_reset_token(session: Session, reset_password_request: RequestPasswordReset):
+    with session() as db:
+        user: User = db.query(User).filter(User.email_address == reset_password_request.email_address).first()
+    resp = {
+        'user_id': user.id,
+        'email_address': user.email_address,
+        'password_reset_token': user.generate_password_reset_token()
+    }
+    return resp

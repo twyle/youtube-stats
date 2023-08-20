@@ -10,7 +10,12 @@ class UserBase(BaseModel):
   
 class UserCreate(UserBase):
     password: str
+    role: str = 'user'
+    activated: bool = False
     
+class UserCreated(UserBase):
+    id: int
+    activation_token: str
 
 class User(UserBase):
     id: int
@@ -24,3 +29,23 @@ class GetUser(BaseModel):
 class GetUsers(BaseModel):
     offset: Optional[int] = 0
     limit: Optional[int] = 10
+    
+class ActivateUser(BaseModel):
+    user_id: int
+    activation_token: str
+    
+class LoginUser(BaseModel):
+    email_address: str
+    password: str
+    
+class LoggedInUser(BaseModel):
+    email_address: str
+    access_token: str
+    refresh_token: str
+    
+class RequestPasswordReset(BaseModel):
+    user_id: int
+    email_address: str
+    
+class RequestPasswordResetToken(RequestPasswordReset):
+    password_reset_token: str
