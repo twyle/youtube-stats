@@ -12,7 +12,7 @@ from jwt import ExpiredSignatureError, InvalidTokenError
 
 
 def create_user(user_data: UserCreate, session: Session):
-    hashed_password = bcrypt.generate_password_hash(user_data.password)
+    hashed_password = User.hash_password(user_data.password)
     user = User(
         first_name=user_data.first_name,
         last_name=user_data.last_name,

@@ -139,7 +139,7 @@ def login_client():
             return {'Error': f'Account with email address {login_data.email_address} is not activated.'}
     try:
         loggin_user(session=get_db, login_data=login_data)
-    except ValueError:
+    except ValueError as e:
         return {'Error': 'Invlaid email address and or password.'}, HTTPStatus.UNAUTHORIZED
     else:
         resp = LoggedInUser(

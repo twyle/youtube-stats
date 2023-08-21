@@ -37,7 +37,7 @@ def create_app(flask_env: str = "development") -> Flask:
     register_error_handlers(app)
     register_extensions(app)
     register_blueprints(app)
-    # register_app_hooks(app)
+    register_app_hooks(app)
 
     @app.route("/", methods=["GET"])
     def health_check():

@@ -2,9 +2,20 @@ from flasgger import LazyString, Swagger
 from flask import request
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
+from elasticsearch import Elasticsearch
+from ..config.config import BaseConfig
 
 bcrypt = Bcrypt()
 jwt = JWTManager()
+
+def create_es_client():
+    """Create the elasticsearch client."""
+    ES_HOST = BaseConfig().ES_HOST
+    ES_PORT = BaseConfig().ES_PORT
+    es_client = Elasticsearch(hosts=[f'http://localhost:9200'])
+    return es_client
+
+es_client = create_es_client()
 
 swagger_template = {
     "swagger": "2.0",

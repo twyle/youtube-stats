@@ -27,8 +27,12 @@ def create_dev_logger():
                 "class": "logging.StreamHandler",
                 "formatter": "json",
             },
+            "elasticsearch": {
+                "class": "api.config.elk_logger.ElasticSearchLogger",
+                "formatter": "json"
+            },
         },
-        "loggers": {"": {"handlers": ["standard"], "level": logging.INFO}},
+        "loggers": {"": {"handlers": ["elasticsearch"], "level": logging.INFO}},
     }
 
     logging.config.dictConfig(config)

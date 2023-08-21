@@ -1,13 +1,41 @@
-version: '3.8'
+version: '3'
 
 services:
-  web:
-    build: ./services/app
-    ports:
-      - 5000:5000
-    command: gunicorn -b 0.0.0.0:5000 manage:app
+  influencer-api:
+    build:
+      context: services/app
+      dockerfile: Dockerfile.prod
+    restart: always
     volumes:
-      - ./services/app:/usr/src/app
+        - .:/usr/src/app
+    expose:  # new
+      - 5000
     env_file:
-      - ./services/app/.env
-    
+      - /home/lyle/.env
+    labels:  # new
+      - "traefik.enable=true"
+      - "traefik.http.routers.flask.rule=Host(`youtube-stats.oryks-sytem.com`)"
+      - "traefik.http.routers.flask.tls=true"
+      - "traefik.http.routers.flask.tls.certresolver=letsencrypt"
+
+  traefik:  # new
+    build:
+      context: ./services/traefik
+      dockerfile: Dockerfile.traefik
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik-public-certificates:/certificates"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`youtube-stats-dashboard.oryks-sytem.com`)"
+      - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=testuser:$$apr1$$jIKW.bdS$$eKXe4Lxjgy/rH65wP1iQe1"
+
+volumes:
+  traefik-public-certificates:

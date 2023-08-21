@@ -3,6 +3,12 @@ import json
 from flask import request, Flask
 
 from ..config.logger_config import app_logger
+from .rate_limiter import request_is_rate_limited
+from redis import Redis
+from datetime import timedelta
+from http import HTTPStatus
+
+r = Redis(host='localhost', port=6379, db=0)
 
 
 def log_post_request():
@@ -91,3 +97,8 @@ def register_app_hooks(app: Flask):
     @app.teardown_request
     def log_exception(exc):
         get_exception(exc)
+        
+    @app.before_request
+    def rate_limit_request():
+        if request_is_rate_limited(r, 'admin', 10, timedelta(seconds=60)):
+            return {'Error': 'You have exceeded the allowed requests'}, HTTPStatus.TOO_MANY_REQUESTS

@@ -1,16 +1,16 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, MappedAsDataclass
 from sqlalchemy.orm import sessionmaker
-import os
+from ...config.config import BaseConfig
 from contextlib import contextmanager
+from flask import current_app
 
 
 class Base(MappedAsDataclass, DeclarativeBase):
     pass
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:///./oryks.db'
-engine = create_engine(SQLALCHEMY_DATABASE_URI, 
-                       connect_args={"check_same_thread": False})
+SQLALCHEMY_DATABASE_URI = BaseConfig().db_conn_string
+engine = create_engine(SQLALCHEMY_DATABASE_URI)
 Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 def create_all():
