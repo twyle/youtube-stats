@@ -1,5 +1,5 @@
 import logging.config
-import os
+import logstash
 
 from dotenv import load_dotenv
 
@@ -27,12 +27,8 @@ def create_dev_logger():
                 "class": "logging.StreamHandler",
                 "formatter": "json",
             },
-            "elasticsearch": {
-                "class": "api.config.elk_logger.ElasticSearchLogger",
-                "formatter": "json"
-            },
         },
-        "loggers": {"": {"handlers": ["elasticsearch"], "level": logging.INFO}},
+        "loggers": {"": {"handlers": ["standard"], "level": logging.INFO}},
     }
 
     logging.config.dictConfig(config)
@@ -82,3 +78,4 @@ def create_logger(env="development"):
 
 
 app_logger = create_logger()
+app_logger.addHandler(logstash.TCPLogstashHandler(host='localhost', port=5959, version=1))

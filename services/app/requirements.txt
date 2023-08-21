@@ -13,3 +13,4 @@ python-json-logger
 psycopg2-binary==2.9.7
 elasticsearch==8.9.0
 redis==5.0.0
+python-logstash==0.4.8
