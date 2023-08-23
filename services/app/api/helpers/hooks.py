@@ -98,7 +98,7 @@ def register_app_hooks(app: Flask):
     def log_exception(exc):
         get_exception(exc)
         
-    @app.before_request
-    def rate_limit_request():
-        if request_is_rate_limited(r, 'admin', 10, timedelta(seconds=60)):
-            return {'Error': 'You have exceeded the allowed requests'}, HTTPStatus.TOO_MANY_REQUESTS
+    # @app.before_request
+    # def rate_limit_request():
+    #     if request_is_rate_limited(r, 'admin', 10, timedelta(seconds=60)):
+    #         return {'Error': 'You have exceeded the allowed requests'}, HTTPStatus.TOO_MANY_REQUESTS

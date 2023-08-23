@@ -25,10 +25,13 @@ auth = Blueprint("auth", __name__)
 @auth.route("/register", methods=["POST"])
 @swag_from("./docs/register.yml", endpoint="auth.register_client", methods=["POST"])
 def register_client():
-    user_data = UserCreate(**request.json)
+    try:
+        user_data = UserCreate(**request.json) 
+    except ValidationError:
+        return {'Error': 'The data provided is invalid or incomplete!'}, HTTPStatus.BAD_REQUEST
     if get_user_by_email(email=user_data.email_address, session=get_db):
         return {'Error': f'User with email address {user_data.email_address} already exists.'}, HTTPStatus.CONFLICT
-    user = create_user(user_data=user_data, session=get_db)
+    user = create_user(user_data=user_data, session=get_db) 
     resp = UserCreatedSchema(
         first_name=user.first_name,
         last_name=user.last_name,
@@ -117,13 +120,13 @@ def activate_account():
     if not get_user(user_data=GetUser(user_id=activation_data.user_id), session=get_db):
         return {'Error': f'User with id {activation_data.user_id} does not exists'}, HTTPStatus.NOT_FOUND
     if user_account_active(session=get_db, user_data=GetUser(user_id=activation_data.user_id)):
-        return {'Error': f'Account with id {activation_data.user_id} is already activated.'}
+        return {'Error': f'Account with id {activation_data.user_id} is already activated.'}, HTTPStatus.FORBIDDEN
     try:
         activate_user_account(session=get_db, activation_data=activation_data)
     except (ExpiredSignatureError, InvalidTokenError):
         return {'Error': 'Invalid or Expired activation token.'}, HTTPStatus.FORBIDDEN
     else:
-        return {'Success': f'Account with id {activation_data.user_id} activated!'}
+        return {'Success': f'Account with id {activation_data.user_id} activated!'}, HTTPStatus.OK
 
 @swag_from("./docs/login.yml", endpoint="auth.login_client", methods=["POST"])
 @auth.route("/login", methods=["POST"])

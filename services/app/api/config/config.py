@@ -48,14 +48,13 @@ class TestingConfig(BaseConfig):
     """Testing configuration."""
 
     TESTING = True
-    SECRET_KEY = os.environ.get("SECRET_KEY", "test-key")
-    JWT_SECRET_KEY = "super-secret-key"
+    SECRET_KEY = 'secret-key'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///'
 
 class ProductionConfig(BaseConfig):
     """Production configuration."""
 
     TESTING = False
-    SECRET_KEY = os.environ.get("SECRET_KEY", "secret-key")
 
 
 Config = {

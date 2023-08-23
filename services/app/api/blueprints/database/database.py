@@ -15,6 +15,9 @@ Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 def create_all():
     Base.metadata.create_all(bind=engine)
+    
+def drop_all():
+    Base.metadata.drop_all(bind=engine)
 
 @contextmanager
 def get_db():

@@ -8,3 +8,5 @@ sphinx
 sphinx_rtd_theme
 commitizen==3.6.0
 pre-commit==3.3.3
+locust==2.16.1
+pytest==7.4.0
