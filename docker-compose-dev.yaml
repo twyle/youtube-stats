@@ -10,31 +10,41 @@ services:
     ports:
       - 5432:5432
 
-  influencer-api:
-    build:
-      context: services/app
-      dockerfile: Dockerfile
-    volumes:
-        - .:/usr/src/app
-    expose:  # new
-      - 5000
-    env_file:
-      - ./services/app/.env
-    labels:  # new
-      - "traefik.enable=true"
-      - "traefik.http.routers.flask.rule=Host(`flask.localhost`)"
-    depends_on:
-      - db
-      - traefik
-
-  traefik:  # new
-    image: traefik
+  redis:
+    image: redis:7
     ports:
-      - 80:80
-      - 8081:8080
+      - '6379:6379'
+    command: redis-server --loglevel warning
     volumes:
-      - "./services/traefik/traefik.dev.toml:/etc/traefik/traefik.toml"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - redis:/data
+
+  # influencer-api:
+  #   build:
+  #     context: services/app
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #       - .:/usr/src/app
+  #   expose:  # new
+  #     - 5000
+  #   env_file:
+  #     - ./services/app/.env
+  #   labels:  # new
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.flask.rule=Host(`flask.localhost`)"
+  #   depends_on:
+  #     - db
+  #     - traefik
+
+  # traefik:  # new
+  #   image: traefik
+  #   ports:
+  #     - 80:80
+  #     - 8081:8080
+  #   volumes:
+  #     - "./services/traefik/traefik.dev.toml:/etc/traefik/traefik.toml"
+  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
 volumes:
   influencer_api:
+  redis:
+    driver: local

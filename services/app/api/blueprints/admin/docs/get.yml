@@ -8,8 +8,8 @@ security:
 parameters:
   - in: query
     description: The query should contain the admin id.
-    required: true
-    name: 'admin_id'
+    required: false
+    name: 'user_id'
     type: 'int'
 
 responses:

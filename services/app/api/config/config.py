@@ -31,7 +31,6 @@ class BaseConfig:
     JWT_SECRET_KEY=os.environ['JWT_SECRET_KEY']
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=int(os.getenv("JWT_ACCESS_TOKEN_EXPIRES", "24")))
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=int(os.getenv("JWT_REFRESH_TOKEN_EXPIRES", "7")))
-    LOG_INDEX=os.environ['LOG_INDEX']
     APP_INDEX=os.environ['APP_INDEX']
     ES_HOST=os.environ['ES_HOST']
     ES_PORT=os.environ['ES_PORT']
