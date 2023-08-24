@@ -11,6 +11,6 @@ sqlalchemy==2.0.19
 pydantic-settings==2.0.3
 python-json-logger
 psycopg2-binary==2.9.7
-elasticsearch==8.9.0
+elasticsearch==7.17.7
 redis==5.0.0
 python-logstash==0.4.8

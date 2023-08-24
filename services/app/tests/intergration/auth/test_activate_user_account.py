@@ -46,7 +46,7 @@ def test_activate_active_account(test_client):
     assert resp.status_code == 403
     
     
-def test_activate_user_invalid(test_client):
+def test_activate_user_invalid_token(test_client):
     user_data = {
         'first_name': 'first_name_activate',
         'last_name': 'last_name_activate',

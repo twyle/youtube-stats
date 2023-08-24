@@ -12,7 +12,7 @@ def create_es_client():
     """Create the elasticsearch client."""
     ES_HOST = BaseConfig().ES_HOST
     ES_PORT = BaseConfig().ES_PORT
-    es_client = Elasticsearch(hosts=[f'http://localhost:9200'])
+    es_client = Elasticsearch(hosts=[f'http://{ES_HOST}:{ES_PORT}'])
     return es_client
 
 es_client = create_es_client()
